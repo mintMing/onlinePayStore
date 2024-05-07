@@ -9,10 +9,10 @@
 				<view class="leftLayout">
 					免费配送
 				</view>
-				<view class="rightLayout">
+				<navigator class="rightLayout" url="/pages/order/order">
 					<u-icon name="order" color="#576b95" size="22"></u-icon>
 					我的订单
-				</view>
+				</navigator>
 			</view>
 			<!-- middle of content -->
 			<view class="middleContent">
@@ -23,20 +23,19 @@
 						scroll-with-animation
 					>
 						<view class="itemNav" 
-							v-for="(item, index) in 20"
-							:key="index"
+							v-for="(item, index) in dataList"
+							:key="item.id"
 							:class="index==navIdx?'active':''" 
 							@click="clickNav(index)"
 						>
-							{{item}}
+							{{item.name}}
 						</view>
 					</scroll-view>
 				</view>
 				<view class="rightContent">
-					<navigator  class="search">
-						<u-icon name="search" size="22" color="#576b95">
-							
-						</u-icon>
+					<navigator class="search" url="/pages/search/search">
+						<u-icon name="search" size="22" color="#576b95"></u-icon>
+						搜索
 					</navigator>
 					<scroll-view class="ScContent" 
 						scroll-y 
@@ -44,15 +43,15 @@
 						scroll-with-animation
 						@scroll="rightScrollEnt"
 					>
-						<!-- large category -->
-						<view class="proClass" v-for="item in 20">
+						<!-- large category box -->
+						<view class="proClass" v-for="item in dataList">
 							<u-sticky :customNavHeight="0" zIndex="2">
-								<view class="proTitle">{{item}}</view>
+								<view class="proTitle">{{item.name}}</view>
 							</u-sticky>
 							<view class="subPro">
-								<!-- little category -->
-								<view class="proItem" v-for="pro in 2">
-									<product-item></product-item>
+								<!-- little category box -->
+								<view class="proItem" v-for="pro in item.children">
+									<product-item :item="pro"></product-item>
 								</view>
 							</view>
 						</view>
@@ -61,11 +60,14 @@
 			</view>
 		</view>
 		<!-- footer -->
-		<car-layout></car-layout>
+		<car-layout v-if="CarSelectedNum>0"></car-layout>
 	</view>
 </template>
 
 <script>
+import {mapState, mapMutations, mapGetters} from "vuex";
+
+
 export default {
 	data() {
 		return {
@@ -74,7 +76,48 @@ export default {
 			leftScrollVal: 0,
 			rightHeightArr: [],
 			leftHeightArr: [],
-			foldState: false, // head whether or not depend on middle layout scroll height
+			foldState: false, // head whether or not depend
+			dataList: [{
+				id:1,
+				name:"豆干制品",
+				children:[{
+					id:11,
+					name:"卫龙辣条",
+					price:10,
+					before_price:22,
+					thumb:"https://mp-c422c6b7-799d-4ff5-9531-5051a0481131.cdn.bspapp.com/cloudstorage/83562e26-cfac-4cec-8f51-9ae6986942af.jpg",
+					numvalue:0
+				},{
+					id:12,
+					name:"卫龙大面筋",
+					price:5,
+					before_price:12,
+					thumb:"https://mp-c422c6b7-799d-4ff5-9531-5051a0481131.cdn.bspapp.com/cloudstorage/30569d48-bb94-40de-8d2b-a3be99d710cd.jpg",
+					numvalue:0
+				}]
+			},{
+				id:2,
+				name:"饼干糕点",
+				children:[{
+					id:21,
+					name:"丹麦曲奇",
+					price:25,
+					before_price:36,
+					thumb:"https://mp-3309c116-4743-47d6-9979-462d2edf878c.cdn.bspapp.com/cloudstorage/6758e11c-949b-48c5-ae69-ddad030c2f94.png",
+					numvalue:0
+				}]
+			},{
+				id:3,
+				name:"酒水饮料",
+				children:[{
+					id:31,
+					name:"韩国烧酒",
+					price:18,
+					before_price:29,
+					thumb:"https://mp-3309c116-4743-47d6-9979-462d2edf878c.cdn.bspapp.com/cloudstorage/b1a12bee-0602-4cb5-927d-b2b246700e89.jpeg",
+					numvalue:0
+				}]
+			}],
 		}
 	},
 	onLoad() {
@@ -83,7 +126,11 @@ export default {
 			this.getHeightArr();
 		})
 	},
+	computed: {
+		...mapGetters(["CarSelectedNum"])
+	},
 	methods: {
+		...mapMutations(["SET_FOLD_STATE"]),
 		clickNav(index){
 			if(this.navIdx == index){
 				return;
@@ -125,10 +172,10 @@ export default {
 			this.leftScrollVal = this.leftHeightArr[rTarIndex];
 			
 			if(rScrollTop < 300){
-				this.foldState = false;
+				this.SET_FOLD_STATE(false);
 			}
 			if(rScrollTop > 400){
-				this.foldState = true;
+				this.SET_FOLD_STATE(true);
 			}
 		}
 	}

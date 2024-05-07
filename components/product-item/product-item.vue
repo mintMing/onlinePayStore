@@ -4,16 +4,16 @@
 			<image class="img" src="../../static/logo2.jpg" alt="cb" mode="aspectFill"></image>
 		</view>
 		<view class="proSelect">
-			<view class="proTitle">产品标题</view>
+			<view class="proTitle">{{item.name}}</view>
 			<view class="priceText">
-				<view class="minPrice">¥10.5</view>
-				<view class="oriPrice">¥11.0</view>
+				<view class="minPrice">¥{{item.price}}</view>
+				<view class="oriPrice">¥{{item.before_price}}</view>
 			</view>
 			<view class="discount">3折</view>
 			<view class="numbox">
 				<view class="skuSelect" v-if="false">选规格</view>
 				<view class="uNum" v-else>
-					<stepper></stepper>
+					<stepper :item="item"></stepper>
 				</view>
 			</view>
 		</view>
@@ -30,6 +30,14 @@ export default {
 		return {
 			
 		};
+	},
+	props: {
+		item: {
+			type: Object,
+			default() {
+				return {};
+			},
+		},
 	}
 }
 </script>

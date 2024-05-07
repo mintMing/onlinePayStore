@@ -4,9 +4,10 @@ import App from './App'
 import Vue from 'vue'
 
 import uView from '@/uni_modules/uview-ui'
+import store from "./store"
 
-Vue.use(uView)
-
+Vue.use(uView);
+Vue.prototype.$store = store; // 全局挂载
 
 import './uni.promisify.adaptor'
 Vue.config.productionTip = false

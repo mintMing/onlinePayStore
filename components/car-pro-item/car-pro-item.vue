@@ -2,19 +2,19 @@
 	<view class="carProItem">
 		<view class="left">
 			<view class="pic">
-				<image class="img" src="../../static/logo2.jpg" mode="aspectFill"></image>
+				<image class="img" :src="item.thumb" mode="aspectFill"></image>
 			</view>
 			<view class="text">
-				<view class="title">titifdsfdfDSEffdf</view>
-				<view class="sku">微辣/10包</view>
+				<view class="title">{{item.name}}</view>
+				<view class="sku" v-if="false">微辣/10包</view>
 				<view class="price">
-					<view class="minPrice">￥555</view>
-					<view class="oriPrice">￥555</view>
+					<view class="minPrice">￥{{item.price}}</view>
+					<view class="oriPrice">￥{{item.before_price}}</view>
 				</view>
 			</view>
 		</view>
 		<view class="right">
-			<stepper></stepper>
+			<stepper :item="item"></stepper>
 		</view>
 	</view>
 
@@ -27,6 +27,14 @@
 			return {
 				
 			};
+		},
+		props: {
+			item: {
+				type: Object,
+				default: ()=> {
+					return  "";
+				},
+			}
 		}
 	}
 </script>

@@ -9,8 +9,8 @@
 				
 				<scroll-view scroll-y="true" class="Carbody">
 					<view class="sContent">
-						<view class="carItem" v-for="item in 5">
-							<car-pro-item></car-pro-item>
+						<view class="carItem" v-for="item in carsList">
+							<car-pro-item :item="item"></car-pro-item>
 						</view>
 					</view>
 				</scroll-view>
@@ -23,17 +23,18 @@
 						hover-class="iconhover"
 						hover-stay-time="50"
 						@tap="clickCarIcon"
+						v-if="!type"
 					>
 						<u-icon name="shopping-cart" size="34" color="#EC544F"></u-icon>
-						<view class="num"></view>
+						<view class="num">{{CarSelectedNum}}</view>
 					</view>
 					<view class="amountPrice">合计
-						<text class="text">￥555</text>
+						<text class="text">￥{{getAmountPrice}}</text>
 					</view>
 				</view>
 				<view class="right">
-					<view class="btn disable" v-if="true">选好了</view>
-					<view class="btn" v-else>支付</view>
+					<view class="btn disable" v-if="!type" @click="goPay">选好了</view>
+					<view class="btn" v-else @click="confirmPay">支付</view>
 				</view>
 			</view>
 			<!-- iphone of footer state bar -->
@@ -44,19 +45,36 @@
 </template>
 
 <script>
-	export default {
-		name:"car-layout",
-		data() {
-			return {
-				carShow: false
-			};
+import {mapGetters} from "vuex";
+
+export default {
+	name:"car-layout",
+	data() {
+		return {
+			carShow: false
+		};
+	},
+	computed: {
+		...mapGetters(["carsList", "getAmountPrice", "CarSelectedNum"])
+	},
+	methods: {
+		clickCarIcon() {
+			this.carShow = !this.carShow;
 		},
-		methods: {
-			clickCarIcon(){
-				this.carShow = !this.carShow
-			}
+		goPay() {
+			uni.navigateTo({
+				url: "/pages/order-pay/order-pay"
+			})
+		},
+		confirmPay() {
+			
 		}
+	},
+	props: {
+		type: String,
+		default: "",
 	}
+}
 </script>
 
 <style lang="scss" scoped>

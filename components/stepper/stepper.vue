@@ -1,10 +1,10 @@
 <template>
 	<view class="pronumbox">
-		<u-number-box v-model="value" min="0" max="99" @change="numChange">
+		<u-number-box v-model="dataItem.numvalue" min="0" max="99" @change="numChange">
 		        <view
 		            slot="minus"
 		            class="minus numbtn"
-					:class="value<=0?'none':''"
+					:class="dataItem.numvalue<=0?'none':''"
 		        >
 		            <u-icon
 		                name="minus"
@@ -15,8 +15,8 @@
 		        <text
 		            slot="input"					           
 		            class="input"
-					:class="value<=0?'none':''"
-		        >{{value}}</text>
+					:class="dataItem.numvalue<=0?'none':''"
+		        >{{dataItem.numvalue}}</text>
 		        <view
 		            slot="plus"
 		            class="plus numbtn"
@@ -32,19 +32,30 @@
 </template>
 
 <script>
-	export default {
-		name:"stepper",
-		data() {
-			return {
-				value: 0,
-			};
-		},
-		methods: {
-			numChange(event){
-				
-			}
+import {mapMutations} from "vuex";
+
+export default {
+	name:"stepper",
+	data() {
+		return {
+			dataItem: this.item,
+		};
+	},
+	methods: {
+		...mapMutations(["setCarsList"]),
+		numChange(event){
+			this.setCarsList({item: this.item, num: event.value});
 		}
+	},
+	props: {
+		item: {
+			type: Object,
+			default() {
+				return {};
+			},
+		},
 	}
+}
 </script>
 
 <style lang="scss" scoped>

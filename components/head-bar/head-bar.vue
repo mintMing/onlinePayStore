@@ -51,21 +51,30 @@
 </template>
 
 <script>
+	import {mapState, mapGetters} from "vuex"
+	
 	export default {
 		name:"head-bar",
 		data() {
+			
 			return {
+				/*
 				statusBarHeight: 0,
 				titleBarHeight: 0,
+				*/
 			};
+			
 		},
 		props: {
+			/*
 			foldState: {
 				type: Boolean,
 				default: false,
 			}
+			*/
 		},
 		mounted(){
+			/*
 			let systemInfo = uni.getSystemInfoSync();
 			// 状态栏的高度
 			this.statusBarHeight = systemInfo.statusBarHeight || 20;
@@ -80,8 +89,11 @@
 			// #ifndef MP-WEIXIN
 			this.titleBarHeight = 40;
 			// #endif
+			*/
 		},
 		computed: {
+			...mapGetters(["statusBarHeight", "titleBarHeight", "bodyBarHeight", "getTitalHeight", "foldState"]),
+			/*
 			getTitalHeight() {
 				if(this.foldState){
 					return this.statusBarHeight + this.titleBarHeight + 10;
@@ -94,6 +106,7 @@
 				}
 				return 100;
 			}
+			*/
 		}
 	}
 </script>

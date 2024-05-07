@@ -6,13 +6,62 @@
 				"navigationBarTitleText": "onlnePayStore",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/order/order",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的订单",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path" : "pages/order/detail",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/search/search",
+			"style" : 
+			{
+				"navigationBarTitleText" : "搜索",
+				// 禁止下拉刷新
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path" : "pages/order-pay/order-pay",
+			"style" : 
+			{
+				"navigationBarTitleText" : "确认订单",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/address/edit-address",
+			"style" : 
+			{
+				"navigationBarTitleText" : "编辑地址",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/address/address-list",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的地址",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#F7F7F7"
 	},
 	"uniIdRouter": {}
 }
