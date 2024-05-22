@@ -102,19 +102,19 @@ var components
 try {
   components = {
     headBar: function () {
-      return __webpack_require__.e(/*! import() | components/head-bar/head-bar */ "components/head-bar/head-bar").then(__webpack_require__.bind(null, /*! @/components/head-bar/head-bar.vue */ 181))
+      return __webpack_require__.e(/*! import() | components/head-bar/head-bar */ "components/head-bar/head-bar").then(__webpack_require__.bind(null, /*! @/components/head-bar/head-bar.vue */ 397))
     },
     uIcon: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-icon/u-icon.vue */ 188))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-icon/u-icon.vue */ 404))
     },
     uSticky: function () {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-sticky/u-sticky */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-sticky/u-sticky")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-sticky/u-sticky.vue */ 197))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-sticky/u-sticky */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-sticky/u-sticky")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-sticky/u-sticky.vue */ 413))
     },
     productItem: function () {
-      return __webpack_require__.e(/*! import() | components/product-item/product-item */ "components/product-item/product-item").then(__webpack_require__.bind(null, /*! @/components/product-item/product-item.vue */ 205))
+      return __webpack_require__.e(/*! import() | components/product-item/product-item */ "components/product-item/product-item").then(__webpack_require__.bind(null, /*! @/components/product-item/product-item.vue */ 421))
     },
     carLayout: function () {
-      return Promise.all(/*! import() | components/car-layout/car-layout */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/car-layout/car-layout")]).then(__webpack_require__.bind(null, /*! @/components/car-layout/car-layout.vue */ 212))
+      return Promise.all(/*! import() | components/car-layout/car-layout */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/car-layout/car-layout")]).then(__webpack_require__.bind(null, /*! @/components/car-layout/car-layout.vue */ 428))
     },
   }
 } catch (e) {

@@ -1,114 +1,125 @@
 <template>
-	<view class="customHead" :style="{height:getTitalHeight+'px'}">
-		<!--  -->
-		<view class="headBg">
-			<image class="headBgImg" src="../../static/logo2.jpg" mode="aspectFill"></image>
-		</view>
-		
-		<view class="container">
-			<!-- title -->
-			<view class="statusBar" :style="{height:statusBarHeight+'px'}"></view>
-			<view class="server" 
-				:style="{height:titleBarHeight+'px'}"
-				v-if="!foldState"
-			>
-				<view class="cusServiceLogn">
-					<u-icon name="server-fill" size="22" color="#fff"></u-icon>
-				</view>
-				<navigator url="" class="manage">
-					<u-icon name="bag-fill" size="22" color="#fff"></u-icon>
-					后台管理 
-				</navigator>
+	<!-- <view> -->
+		<view class="customHead" :style="{height:getTitalHeight+'px'}" >
+			<!--  -->
+			<view class="headBg">
+				<image class="headBgImg" src="../../static/logo2.jpg" mode="aspectFill"></image>
 			</view>
-			<!-- logn -->
-			<view class="LognBody"
-				:class="foldState?'fold':''"
-				:style="{height:bodyBarHeight+'px'}"
-			>
-				<view class="lognBrand">
-					<view class="pic">
-						<image class="img" src="../../static/logo2.jpg" mode="aspectFill"></image>
+			
+			<view class="container">
+				<!-- title -->
+				<view class="statusBar" :style="{height:statusBarHeight+'px'}"></view>
+				<view class="server" 
+					:style="{height:titleBarHeight+'px'}"
+					v-if="!foldState"
+				>
+					<view class="cusServiceLogn">
+						<u-icon name="server-fill" size="22" color="#fff"></u-icon>
 					</view>
-					<view class="text">
+					<navigator url="/pages-manage/index/index" class="manage">
+						<u-icon name="bag-fill" size="22" color="#fff"></u-icon>
+						后台管理 
+					</navigator>
+				</view>
+				<!-- logn -->
+				<view class="LognBody"
+					:class="foldState?'fold':''"
+					:style="{height:bodyBarHeight+'px'}"
+				>
+					<view class="lognBrand" @click="clickBrand">
+						<view class="pic">
+							<image class="img" src="" mode="aspectFill"></image>
+						</view>
+						<view class="text">
+							<view class="title">
+								<text class="font">test</text>
+								<u-icon class="icon" name="more-circle" size="22" color="#fff"></u-icon>
+							</view>
+							<view class="des">
+								test
+							</view>
+						</view>
+					</view>
+					<view class="code">
+						<view class="pic">
+							<image class="img" src="../../static/TEST.png" mode="aspectFill"></image>
+						</view>
+						<text class="pay">付款</text>
+					</view>
+				</view>
+			</view>
+		<!-- </view> -->
+		
+		<!-- <view> -->
+			<!-- 底部商家信息弹窗 -->
+			<uni-popup ref="merchantInfoPopup" type="bottom">
+				<view class="merchantInfoWrapper">
+					<view class="close" @click="closeMerchPop">
+						<u-icon name="arrow-down" color="#666"></u-icon>
+					</view>
+					
+					<view class="merchBox">
+						<view class="pic">
+							<image class="img" src="" mode="aspectFill"></image>
+						</view>
 						<view class="title">
-							<text class="font">uniapp of journey</text>
-							<u-icon class="icon" name="more-circle" size="22" color="#fff"></u-icon>
+							tes
 						</view>
 						<view class="des">
-							一大堆的品牌介绍一大堆的品牌介绍一大堆的品牌介绍一大堆的品牌介绍一大堆的品牌介绍
+							tes
 						</view>
 					</view>
-				</view>
-				<view class="code">
-					<view class="pic">
-						<image class="img" src="../../static/TEST.png" mode="aspectFill"></image>
+					
+					<view class="cell">
+						<u-cell icon="phone" title="getMerchantInfo.mobile" isLink></u-cell>
+						<u-cell icon="map" title="getMerchantInfo.address" isLink></u-cell>
 					</view>
-					<text class="pay">付款</text>
+					
 				</view>
-			</view>
+				<view class="safe-area-bottom"></view>
+			</uni-popup>
 		</view>
-	</view>
+		
+	<!-- </view> -->
 </template>
 
 <script>
-	import {mapState, mapGetters} from "vuex"
-	
-	export default {
-		name:"head-bar",
-		data() {
-			
-			return {
-				/*
-				statusBarHeight: 0,
-				titleBarHeight: 0,
-				*/
-			};
-			
-		},
-		props: {
-			/*
-			foldState: {
-				type: Boolean,
-				default: false,
-			}
-			*/
-		},
-		mounted(){
-			/*
-			let systemInfo = uni.getSystemInfoSync();
-			// 状态栏的高度
-			this.statusBarHeight = systemInfo.statusBarHeight || 20;
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex"
+//const brandCloudObj = uniCloud.importObject("mint-mall-merchantInfo");
 
-			// #ifdef MP-WEIXIN
-			// 头部胶囊体信息
-			let menuBtnInfo = uni.getMenuButtonBoundingClientRect();
-			// 头部标题高度
-			this.titleBarHeight = menuBtnInfo.height + (menuBtnInfo.top - this.statusBarHeight) * 2;
-			// #endif
-			
-			// #ifndef MP-WEIXIN
-			this.titleBarHeight = 40;
-			// #endif
-			*/
+export default {
+	name: "head-bar",
+	data() {
+		return {};
+	},
+	props: {},
+	mounted(){
+
+	},
+	computed: {
+		...mapGetters(["statusBarHeight", "titleBarHeight", "bodyBarHeight", 
+			"getTitalHeight", "foldState"]),
+	},
+	created() {
+		/*
+		brandCloudObj.mIget().then((res)=> {
+			this.SET_BRAND(res.data[0]);
+		})
+		*/
+	   //this.GET_BRAND_DATA();
+	},
+	methods: {
+		//...mapMutations(["SET_BRAND"]),
+		//...mapActions(["GET_BRAND_DATA"]),
+		// 商家信息弹窗
+		clickBrand() {
+			this.$refs.merchantInfoPopup.open();
 		},
-		computed: {
-			...mapGetters(["statusBarHeight", "titleBarHeight", "bodyBarHeight", "getTitalHeight", "foldState"]),
-			/*
-			getTitalHeight() {
-				if(this.foldState){
-					return this.statusBarHeight + this.titleBarHeight + 10;
-				}
-				return this.statusBarHeight + this.titleBarHeight + 100 + 10;
-			},
-			bodyBarHeight() {
-				if(this.foldState){
-					return this.titleBarHeight;
-				}
-				return 100;
-			}
-			*/
-		}
+		closeMerchPop() {
+			this.$refs.merchantInfoPopup.close();
+		},
 	}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -235,6 +246,47 @@
 				}
 			}
 		}
+	}
+}
+
+.merchantInfoWrapper {
+	padding: 30rpx;
+	border-radius: 20rpx 20rpx 0 0;
+	background: #fff;
+	@include flex-box();
+	flex-direction: column;
+	.close {
+		background: page-bg-color;
+		padding: 5rpx 20rpx;
+		border-radius: 30rpx;
+	}
+	.merchBox {
+		@include flex-box();
+		flex-direction: column;
+		padding: 30rpx 0;
+		.pic {
+			width: 100rpx;
+			height: 100rpx;
+			border-radius: 50%;
+			overflow: hidden;
+			.img {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.title {
+			font-size: 34rpx;
+			color: $text-font-color-1;
+			padding: 10rpx 0;
+		}
+		.des {
+			font-size: 28rpx;
+			color: $text-font-color-2;
+		}
+	}
+	.cell {
+		width: 100%;
+		padding: 30rpx 0 100rpx;
 	}
 }
 </style>

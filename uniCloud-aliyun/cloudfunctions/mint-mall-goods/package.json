@@ -1,0 +1,7 @@
+{
+  "name": "mint-mall-goods",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

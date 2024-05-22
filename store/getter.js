@@ -18,7 +18,7 @@ const getters = {
 	// without or not expand middle layout
 	foldState: state=> state.system.foldState,
 	// footer car page of data
-	carsList:state=> state.cars.carsList,
+	carsList: state=> state.cars.carsList,
 	// calculate price
 	getAmountPrice: state=> {
 		return state.cars.carsList.reduce((prev, next)=> {
@@ -30,7 +30,8 @@ const getters = {
 		return state.cars.carsList.reduce((prev, next)=> {
 			return prev += next.numvalue;
 		}, 0);
-	}
+	},
+	
 }
 
 export default getters
