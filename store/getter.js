@@ -31,7 +31,15 @@ const getters = {
 			return prev += next.numvalue;
 		}, 0);
 	},
-	
+	merchantInfo: state=> {
+		return state.merchant.merchantData;
+	},
+	detailPopState: state=> {
+		return state.goods.detailPopState;
+	},
+	detailData: state=> {
+		return state.goods.detailData;
+	}
 }
 
-export default getters
+export default getters;

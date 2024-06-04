@@ -243,4 +243,7 @@
   -webkit-appearance: none;
   background: transparent;
 }
+view, text, scroll-view {
+  box-sizing: border-box;
+}
 

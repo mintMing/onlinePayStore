@@ -1,17 +1,22 @@
 <template>
-	<view class="proItem">
+	<view class="proItem" @click="showDetail">
 		<view class="proPic">
-			<image class="img" src="../../static/logo2.jpg" alt="cb" mode="aspectFill"></image>
+			<image class="img" :src="item.thumb[0].url" alt="cb" mode="aspectFill"></image>
 		</view>
 		<view class="proSelect">
 			<view class="proTitle">{{item.name}}</view>
 			<view class="priceText">
-				<view class="minPrice">¥{{item.price}}</view>
-				<view class="oriPrice">¥{{item.before_price}}</view>
+				<view class="minPrice">¥{{ priceFormat(item.price) }}</view>
+				<view class="oriPrice" v-if="item.originalPrice">¥{{ priceFormat(item.originalPrice) }}</view>
 			</view>
-			<view class="discount">3折</view>
+			<view 
+				class="discount" 
+				v-if="item.originalPrice && discount(item.price, item.originalPrice)" 
+			>
+				{{ discount(item.price, item.originalPrice) }}
+			</view>
 			<view class="numbox">
-				<view class="skuSelect" v-if="false">选规格</view>
+				<view class="skuSelect" v-if="item.skuSelect.length">选规格</view>
 				<view class="uNum" v-else>
 					<stepper :item="item"></stepper>
 				</view>
@@ -24,8 +29,11 @@
 </template>
 
 <script>
+import { priceFormat, discount } from '../../utils/tools';
+import { mapMutations } from "vuex";
+	
 export default {
-	name:"product-item",
+	name: "product-item",
 	data() {
 		return {
 			
@@ -38,6 +46,15 @@ export default {
 				return {};
 			},
 		},
+	},
+	methods: {
+		...mapMutations(["setDetailState", "setDetailData"]),
+		priceFormat,
+		discount,
+		showDetail(){
+			this.setDetailState(true);
+			this.setDetailData(this.item);
+		},
 	}
 }
 </script>
@@ -45,8 +62,9 @@ export default {
 <style lang="scss" scoped>
 .proItem{
 	width: 100%;
-	@include flex-box();
+	// @include flex-box();
 	padding: 25rpx 0;
+	display: flex;
 	.proPic{
 		width: 170rpx;
 		height: 170rpx;
@@ -61,13 +79,14 @@ export default {
 		flex:1;
 		padding-left: 20rpx;
 		position: relative;
+		//border: 1px solid red;
 		.proTitle{
 			font-size: 34rpx;
 			font-weight: bold;
 			@include ellipsis();			
 		}
 		.priceText{
-			@include flex-box-set(start,end);
+			@include flex-box-set(start, end);
 			font-weight: bold;
 			padding: 25rpx 0;
 			.minPrice{

@@ -1,9 +1,9 @@
 <template>
-	<!-- <view> -->
-		<view class="customHead" :style="{height:getTitalHeight+'px'}" >
+	<view>
+		<view class="customHead" :style="{height:getTitalHeight+'px'}" v-if="merchantInfo.name">
 			<!--  -->
 			<view class="headBg">
-				<image class="headBgImg" src="../../static/logo2.jpg" mode="aspectFill"></image>
+				<image class="headBgImg" :src="merchantInfo.thumb[0].url" mode="aspectFill"></image>
 			</view>
 			
 			<view class="container">
@@ -26,17 +26,17 @@
 					:class="foldState?'fold':''"
 					:style="{height:bodyBarHeight+'px'}"
 				>
-					<view class="lognBrand" @click="clickBrand">
+					<view class="lognBrand" @click="clickMerch">
 						<view class="pic">
-							<image class="img" src="" mode="aspectFill"></image>
+							<image class="img" :src="merchantInfo.thumb[0].url" mode="aspectFill"></image>
 						</view>
 						<view class="text">
 							<view class="title">
-								<text class="font">test</text>
+								<text class="font">{{ merchantInfo.name }}</text>
 								<u-icon class="icon" name="more-circle" size="22" color="#fff"></u-icon>
 							</view>
 							<view class="des">
-								test
+								{{ merchantInfo.about }}
 							</view>
 						</view>
 					</view>
@@ -48,9 +48,9 @@
 					</view>
 				</view>
 			</view>
-		<!-- </view> -->
+		</view>
 		
-		<!-- <view> -->
+		<view v-if="merchantInfo.name">
 			<!-- 底部商家信息弹窗 -->
 			<uni-popup ref="merchantInfoPopup" type="bottom">
 				<view class="merchantInfoWrapper">
@@ -60,7 +60,7 @@
 					
 					<view class="merchBox">
 						<view class="pic">
-							<image class="img" src="" mode="aspectFill"></image>
+							<image class="img" :src="merchantInfo.thumb[0].url" mode="aspectFill"></image>
 						</view>
 						<view class="title">
 							tes
@@ -71,8 +71,20 @@
 					</view>
 					
 					<view class="cell">
-						<u-cell icon="phone" title="getMerchantInfo.mobile" isLink></u-cell>
-						<u-cell icon="map" title="getMerchantInfo.address" isLink></u-cell>
+						<u-cell 
+							icon="phone" 
+							:title="getMerchantInfo.mobile" 
+							isLink
+							@click="clickMobile(merchantInfo.mobile)"
+						>
+						</u-cell>
+						<u-cell 
+							icon="map" 
+							:title="getMerchantInfo.address" 
+							isLink
+							@click="clickMap(merchantInfo.address)"
+						>
+						</u-cell>
 					</view>
 					
 				</view>
@@ -80,12 +92,12 @@
 			</uni-popup>
 		</view>
 		
-	<!-- </view> -->
+	</view>
 </template>
 
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from "vuex"
-//const brandCloudObj = uniCloud.importObject("mint-mall-merchantInfo");
+const merchantCloudObj = uniCloud.importObject("mint-mall-merchantInfo");
 
 export default {
 	name: "head-bar",
@@ -94,30 +106,54 @@ export default {
 	},
 	props: {},
 	mounted(){
-
+		
 	},
 	computed: {
 		...mapGetters(["statusBarHeight", "titleBarHeight", "bodyBarHeight", 
-			"getTitalHeight", "foldState"]),
+			"getTitalHeight", "foldState", "merchantInfo"]),
 	},
 	created() {
-		/*
-		brandCloudObj.mIget().then((res)=> {
-			this.SET_BRAND(res.data[0]);
-		})
-		*/
-	   //this.GET_BRAND_DATA();
+	   this.getMerchantInfo();
 	},
 	methods: {
-		//...mapMutations(["SET_BRAND"]),
-		//...mapActions(["GET_BRAND_DATA"]),
+		...mapMutations(["setMerchantInfo"]),
+		...mapActions(["getMerchantInfo"]),
 		// 商家信息弹窗
-		clickBrand() {
+		clickMerch() {
 			this.$refs.merchantInfoPopup.open();
 		},
 		closeMerchPop() {
 			this.$refs.merchantInfoPopup.close();
 		},
+		clickMobile(value) {
+			//console.log(value);
+			uni.makePhoneCall({
+				"phoneNumber": value,
+			});
+		},
+		clickMap(value) {
+			//console.log(value);
+			uni.request({
+				url: "https://restapi.amap.com/v3/geocode/geo",
+				data: {
+					key: "6b5013f1d70340c8a004ce602c86e8cb",
+					address: value,
+				},
+				success:res=> {
+					//console.log(res);
+					let location = res.data.geocodes[0].location;
+					let arr = location.split(",").map(item=> Number(item));
+					uni.openLocation({
+						latitude: arr[1],
+						longitude: arr[0],
+					})
+				}
+			})
+			uni.openLocation({
+				latitude: 38,
+				longitude: 116,
+			})
+		}
 	}
 }
 </script>

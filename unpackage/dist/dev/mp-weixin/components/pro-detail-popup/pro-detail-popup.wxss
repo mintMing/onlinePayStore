@@ -1,0 +1,102 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 文本 */
+/* 布局 */
+.detailWrapper {
+  height: 85vh;
+}
+.detailWrapper .top {
+  height: 80rpx;
+  width: 100%;
+}
+.detailWrapper .body {
+  height: calc(100% - 220rpx);
+}
+.detailWrapper .body .scrollView {
+  height: 100%;
+  padding: 0 30rpx;
+}
+.detailWrapper .body .scrollView .thumb {
+  width: 690rpx;
+  height: 690rpx;
+}
+.detailWrapper .body .scrollView .thumb .img {
+  width: 100%;
+  height: 100%;
+}
+.detailWrapper .body .scrollView .info {
+  padding: 20rpx 0;
+  border-bottom: 1px solid #efefef;
+}
+.detailWrapper .body .scrollView .info .title {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+.detailWrapper .body .scrollView .info .priceView {
+  display: flex;
+  align-items: center;
+  padding-top: 20rpx;
+}
+.detailWrapper .body .scrollView .info .priceView .price {
+  font-size: 46rpx;
+  font-weight: bold;
+  color: #EC544F;
+}
+.detailWrapper .body .scrollView .info .priceView .originalPrice {
+  font-size: 28rpx;
+  color: #a7a7a7;
+  font-weight: bold;
+  text-decoration: line-through;
+  margin-left: 10rpx;
+}
+.detailWrapper .body .scrollView .info .priceView .discount {
+  border: 1px solid #EC544F;
+  color: #EC544F;
+  font-size: 22rpx;
+  padding: 2rpx 20rpx;
+  margin-left: 10rpx;
+  border-radius: 8rpx;
+}
+.detailWrapper .body .scrollView .text {
+  padding: 20rpx 0;
+}
+.detailWrapper .body .scrollView .text .title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.detailWrapper .body .scrollView .text .description {
+  padding: 20rpx 0;
+  line-height: 1.7em;
+}
+.detailWrapper .body .scrollView .picList .img {
+  width: 100%;
+  margin-bottom: 30rpx;
+}
+.detailWrapper .body .scrollView .intro {
+  padding: 40rpx 0;
+  font-size: 30rpx;
+  color: #a7a7a7;
+  text-align: center;
+}
+.detailWrapper .footer {
+  height: 140rpx;
+  border-top: 1px solid #efefef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  padding: 0 200rpx;
+}
+

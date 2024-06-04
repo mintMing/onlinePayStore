@@ -25,10 +25,10 @@
 						<view class="itemNav" 
 							v-for="(item, index) in dataList"
 							:key="item.id"
-							:class="index==navIdx?'active':''" 
+							:class="index==navIdx?'active':''"
 							@click="clickNav(index)"
 						>
-							{{item.name}}
+							{{ item.name }}
 						</view>
 					</scroll-view>
 				</view>
@@ -50,7 +50,7 @@
 							</u-sticky>
 							<view class="subPro">
 								<!-- little category box -->
-								<view class="proItem" v-for="pro in item.children">
+								<view class="proItem" v-for="pro in item.proGroup">
 									<product-item :item="pro"></product-item>
 								</view>
 							</view>
@@ -59,14 +59,20 @@
 				</view>
 			</view>
 		</view>
+		
+		<!-- 商品详细 -->
+		<pro-detail-popup></pro-detail-popup>
+		
+		
 		<!-- footer -->
 		<car-layout v-if="CarSelectedNum>0"></car-layout>
 	</view>
 </template>
 
 <script>
-import {mapState, mapMutations, mapGetters} from "vuex";
+import { mapState, mapMutations, mapGetters } from "vuex";
 
+const goodsCloudObj = uniCloud.importObject("mint-mall-goods");
 
 export default {
 	data() {
@@ -77,60 +83,24 @@ export default {
 			rightHeightArr: [],
 			leftHeightArr: [],
 			foldState: false, // head whether or not depend
-			dataList: [{
-				id:1,
-				name:"豆干制品",
-				children:[{
-					id:11,
-					name:"卫龙辣条",
-					price:10,
-					before_price:22,
-					thumb:"https://mp-c422c6b7-799d-4ff5-9531-5051a0481131.cdn.bspapp.com/cloudstorage/83562e26-cfac-4cec-8f51-9ae6986942af.jpg",
-					numvalue:0
-				},{
-					id:12,
-					name:"卫龙大面筋",
-					price:5,
-					before_price:12,
-					thumb:"https://mp-c422c6b7-799d-4ff5-9531-5051a0481131.cdn.bspapp.com/cloudstorage/30569d48-bb94-40de-8d2b-a3be99d710cd.jpg",
-					numvalue:0
-				}]
-			},{
-				id:2,
-				name:"饼干糕点",
-				children:[{
-					id:21,
-					name:"丹麦曲奇",
-					price:25,
-					before_price:36,
-					thumb:"https://mp-3309c116-4743-47d6-9979-462d2edf878c.cdn.bspapp.com/cloudstorage/6758e11c-949b-48c5-ae69-ddad030c2f94.png",
-					numvalue:0
-				}]
-			},{
-				id:3,
-				name:"酒水饮料",
-				children:[{
-					id:31,
-					name:"韩国烧酒",
-					price:18,
-					before_price:29,
-					thumb:"https://mp-3309c116-4743-47d6-9979-462d2edf878c.cdn.bspapp.com/cloudstorage/b1a12bee-0602-4cb5-927d-b2b246700e89.jpeg",
-					numvalue:0
-				}]
-			}],
+			dataList: [],
 		}
 	},
-	onLoad() {
+	async onLoad() {
+		// await 解决内容与高度计算的优先级
+		await this.getGoodsData();
 		// 在下次 DOM 更新循环结束之后执行延迟回调
 		this.$nextTick(()=>{
 			this.getHeightArr();
-		})
+		});
+		
+		
 	},
 	computed: {
 		...mapGetters(["CarSelectedNum"])
 	},
 	methods: {
-		...mapMutations(["SET_FOLD_STATE"]),
+		...mapMutations(["setFoldState"]),
 		clickNav(index){
 			if(this.navIdx == index){
 				return;
@@ -172,11 +142,22 @@ export default {
 			this.leftScrollVal = this.leftHeightArr[rTarIndex];
 			
 			if(rScrollTop < 300){
-				this.SET_FOLD_STATE(false);
+				this.setFoldState(false);
 			}
 			if(rScrollTop > 400){
-				this.SET_FOLD_STATE(true);
+				this.setFoldState(true);
 			}
+		},
+		async getGoodsData() {
+			let res = await goodsCloudObj.getList();
+			console.log(res.data);
+			res.data.forEach((item, index)=> {
+				item.proGroup.forEach((child, idx)=> {
+					res.data[index].proGroup[idx].numvalue = 0;
+				});
+			});
+			this.dataList = res.data;
+			
 		}
 	}
 

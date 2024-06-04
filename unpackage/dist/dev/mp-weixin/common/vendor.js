@@ -1557,7 +1557,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8923,7 +8923,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8944,14 +8944,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9047,7 +9047,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9954,7 +9954,8 @@ var S = "development" === "development",
   T = I({
     "address": [
         "127.0.0.1",
-        "10.71.160.38"
+        "192.168.137.1",
+        "10.71.160.95"
     ],
     "debugPort": 9001,
     "initialLaunchType": "local",
@@ -18009,7 +18010,7 @@ var _default = {
   },
   "uniIdRouter": {
     "loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
-    "needLogin": ["pages-manage/.*"]
+    "needLogin": ["pages-manage/.*", "pages/order/.*", "pages/order-pay/.*", "pages/address/.*"]
   }
 };
 exports.default = _default;
@@ -27409,12 +27410,16 @@ var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 168));
 var _system = _interopRequireDefault(__webpack_require__(/*! @/store/modules/system.js */ 169));
 var _getter = _interopRequireDefault(__webpack_require__(/*! ./getter.js */ 170));
 var _cars = _interopRequireDefault(__webpack_require__(/*! @/store/modules/cars.js */ 171));
+var _merchant = _interopRequireDefault(__webpack_require__(/*! @/store/modules/merchant.js */ 172));
+var _goods = _interopRequireDefault(__webpack_require__(/*! ./modules/goods.js */ 173));
 _vue.default.use(_vuex.default);
 var store = new _vuex.default.Store({
   getters: _getter.default,
   modules: {
     system: _system.default,
-    cars: _cars.default
+    cars: _cars.default,
+    merchant: _merchant.default,
+    goods: _goods.default
   }
 });
 var _default = store;
@@ -28712,7 +28717,7 @@ var system = {
     foldState: false
   },
   mutations: {
-    SET_FOLD_STATE: function SET_FOLD_STATE(state, value) {
+    setFoldState: function setFoldState(state, value) {
       state.foldState = value;
     }
   }
@@ -28776,6 +28781,15 @@ var getters = {
     return state.cars.carsList.reduce(function (prev, next) {
       return prev += next.numvalue;
     }, 0);
+  },
+  merchantInfo: function merchantInfo(state) {
+    return state.merchant.merchantData;
+  },
+  detailPopState: function detailPopState(state) {
+    return state.goods.detailPopState;
+  },
+  detailData: function detailData(state) {
+    return state.goods.detailData;
   }
 };
 var _default = getters;
@@ -28831,6 +28845,106 @@ exports.default = _default;
 
 /***/ }),
 /* 172 */
+/*!***************************************************!*\
+  !*** D:/onlinePayStore/store/modules/merchant.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uniCloud) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 31));
+var merchantCloudObj = uniCloud.importObject("mint-mall-merchantInfo");
+var merchant = {
+  state: {
+    merchantData: {
+      //name: "wzm"
+    }
+  },
+  mutations: {
+    setMerchantInfo: function setMerchantInfo(state, value) {
+      state.merchantData = value;
+    }
+  },
+  actions: {
+    getMerchantInfo: function getMerchantInfo(context) {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var keyArr, res;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                keyArr = Object.keys(context.state.merchantData);
+                if (!keyArr.length) {
+                  _context.next = 3;
+                  break;
+                }
+                return _context.abrupt("return");
+              case 3:
+                _context.next = 5;
+                return merchantCloudObj.mIget();
+              case 5:
+                res = _context.sent;
+                // 提交mutation更改state 但同步
+                context.commit("setMerchantInfo", res.data[0]);
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
+  }
+};
+var _default = merchant;
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 27)["default"]))
+
+/***/ }),
+/* 173 */
+/*!************************************************!*\
+  !*** D:/onlinePayStore/store/modules/goods.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var goods = {
+  state: {
+    detailPopState: false,
+    // 弹窗数据
+    detailData: {}
+  },
+  mutations: {
+    setDetailState: function setDetailState(state, value) {
+      state.detailPopState = value;
+    },
+    setDetailData: function setDetailData(state, value) {
+      // 商品描述的换行符
+      value.description = value.description.replace(/\n/g, "<br/>");
+      state.detailData = value;
+    }
+  }
+};
+var _default = goods;
+exports.default = _default;
+
+/***/ }),
+/* 174 */
 /*!**************************************************!*\
   !*** D:/onlinePayStore/uni.promisify.adaptor.js ***!
   \**************************************************/
@@ -28853,8 +28967,6 @@ uni.addInterceptor({
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 173 */,
-/* 174 */,
 /* 175 */,
 /* 176 */,
 /* 177 */,
@@ -28923,7 +29035,9 @@ uni.addInterceptor({
 /* 240 */,
 /* 241 */,
 /* 242 */,
-/* 243 */
+/* 243 */,
+/* 244 */,
+/* 245 */
 /*!******************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/common/store.js ***!
   \******************************************************************/
@@ -28942,7 +29056,7 @@ var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 31));
 var _pages = _interopRequireDefault(__webpack_require__(/*! @/pages.json */ 37));
-var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 244));
+var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 246));
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -29171,18 +29285,72 @@ exports.store = store;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 27)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 244 */
+/* 246 */
 /*!************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/config.js ***!
   \************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: D:\\onlinePayStore\\uni_modules\\uni-id-pages\\config.js: Unexpected token, expected \",\" (13:1)\n\n  11 | \t'smsCode'\n  12 |\n> 13 | \t'weixin',\n     | \t^\n  14 |\n  15 |\n  16 |   ],\n    at instantiate (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:67:32)\n    at constructor (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:364:12)\n    at JSXParserMixin.raise (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:3365:19)\n    at JSXParserMixin.unexpected (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:3398:16)\n    at JSXParserMixin.expect (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:3761:28)\n    at JSXParserMixin.parseExprList (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12343:14)\n    at JSXParserMixin.parseArrayLike (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12240:26)\n    at JSXParserMixin.parseExprAtom (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11455:23)\n    at JSXParserMixin.parseExprAtom (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:7239:20)\n    at JSXParserMixin.parseExprSubscripts (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11171:23)\n    at JSXParserMixin.parseUpdate (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11153:21)\n    at JSXParserMixin.parseMaybeUnary (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11127:23)\n    at JSXParserMixin.parseMaybeUnaryOrPrivate (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10956:61)\n    at JSXParserMixin.parseExprOps (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10962:23)\n    at JSXParserMixin.parseMaybeConditional (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10937:23)\n    at JSXParserMixin.parseMaybeAssign (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10895:21)\n    at D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10863:39\n    at JSXParserMixin.allowInAnd (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12640:12)\n    at JSXParserMixin.parseMaybeAssignAllowIn (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10863:17)\n    at JSXParserMixin.parseObjectProperty (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12127:83)\n    at JSXParserMixin.parseObjPropValue (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12154:100)\n    at JSXParserMixin.parsePropertyDefinition (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12083:17)\n    at JSXParserMixin.parseObjectLike (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11993:21)\n    at JSXParserMixin.parseExprAtom (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11464:23)\n    at JSXParserMixin.parseExprAtom (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:7239:20)\n    at JSXParserMixin.parseExprSubscripts (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11171:23)\n    at JSXParserMixin.parseUpdate (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11153:21)\n    at JSXParserMixin.parseMaybeUnary (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11127:23)\n    at JSXParserMixin.parseMaybeUnaryOrPrivate (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10956:61)\n    at JSXParserMixin.parseExprOps (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10962:23)\n    at JSXParserMixin.parseMaybeConditional (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10937:23)\n    at JSXParserMixin.parseMaybeAssign (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10895:21)\n    at D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10863:39\n    at JSXParserMixin.allowInAnd (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12635:16)\n    at JSXParserMixin.parseMaybeAssignAllowIn (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10863:17)\n    at JSXParserMixin.parseExportDefaultExpression (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:14235:22)\n    at JSXParserMixin.parseExport (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:14139:25)\n    at JSXParserMixin.parseStatementContent (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:13073:27)\n    at JSXParserMixin.parseStatementLike (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12952:17)\n    at JSXParserMixin.parseModuleItem (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12933:17)\n    at JSXParserMixin.parseBlockOrModuleBlockBody (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:13558:36)\n    at JSXParserMixin.parseBlockBody (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:13550:10)\n    at JSXParserMixin.parseProgram (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12842:10)\n    at JSXParserMixin.parseTopLevel (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:12832:25)\n    at JSXParserMixin.parse (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:14740:10)\n    at parse (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:14761:26)\n    at parser (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\core\\lib\\parser\\index.js:41:34)\n    at parser.next (<anonymous>)\n    at normalizeFile (D:\\Application\\HBuilderX.4.14.2024043013\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\core\\lib\\transformation\\normalize-file.js:66:38)\n    at normalizeFile.next (<anonymous>)");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  // 调试模式
+  debug: false,
+  /*
+  登录类型 未列举到的或运行环境不支持的，将被自动隐藏。
+  如果需要在不同平台有不同的配置，直接用条件编译即可
+  */
+  isAdmin: false,
+  // 区分管理端与用户端
+  loginTypes: ['username', 'smsCode', 'weixin'],
+  // 政策协议
+  agreements: {
+    serviceUrl: 'https://xxx',
+    // 用户服务协议链接
+    privacyUrl: 'https://xxx',
+    // 隐私政策条款链接
+    // 哪些场景下显示，1.注册（包括登录并注册，如：微信登录、苹果登录、短信验证码登录）、2.登录（如：用户名密码登录）
+    scope: ['register', 'login', 'realNameVerify']
+  },
+  // 提供各类服务接入（如微信登录服务）的应用id
+  appid: {
+    weixin: {
+      // 微信公众号的appid，来源:登录微信公众号（https://mp.weixin.qq.com）-> 设置与开发 -> 基本配置 -> 公众号开发信息 -> AppID
+      h5: 'xxxxxx',
+      // 微信开放平台的appid，来源:登录微信开放平台（https://open.weixin.qq.com） -> 管理中心 -> 网站应用 -> 选择对应的应用名称，点击查看 -> AppID
+      web: 'xxxxxx'
+    }
+  },
+  /**
+  * 密码强度
+  * super（超强：密码必须包含大小写字母、数字和特殊符号，长度范围：8-16位之间）
+  * strong（强: 密密码必须包含字母、数字和特殊符号，长度范围：8-16位之间）
+  * medium (中：密码必须为字母、数字和特殊符号任意两种的组合，长度范围：8-16位之间)
+  * weak（弱：密码必须包含字母和数字，长度范围：6-16位之间）
+  * 为空或false则不验证密码强度
+  */
+  passwordStrength: 'medium',
+  /**
+  * 登录后允许用户设置密码（只针对未设置密码得用户）
+  * 开启此功能将 setPasswordAfterLogin 设置为 true 即可
+  * "setPasswordAfterLogin": false
+  *
+  * 如果允许用户跳过设置密码 将 allowSkip 设置为 true
+  * "setPasswordAfterLogin": {
+  *   "allowSkip": true
+  * }
+  * */
+  setPasswordAfterLogin: false
+};
+exports.default = _default;
 
 /***/ }),
-/* 245 */,
-/* 246 */,
 /* 247 */,
 /* 248 */,
 /* 249 */,
@@ -29205,7 +29373,9 @@ throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index
 /* 266 */,
 /* 267 */,
 /* 268 */,
-/* 269 */
+/* 269 */,
+/* 270 */,
+/* 271 */
 /*!*****************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/common/login-page.mixin.js ***!
   \*****************************************************************************/
@@ -29221,8 +29391,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _store = __webpack_require__(/*! @/uni_modules/uni-id-pages/common/store.js */ 243);
-var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 244));
+var _store = __webpack_require__(/*! @/uni_modules/uni-id-pages/common/store.js */ 245);
+var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 246));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var mixin = {
@@ -29310,8 +29480,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 270 */,
-/* 271 */,
 /* 272 */,
 /* 273 */,
 /* 274 */,
@@ -29334,7 +29502,9 @@ exports.default = _default;
 /* 291 */,
 /* 292 */,
 /* 293 */,
-/* 294 */
+/* 294 */,
+/* 295 */,
+/* 296 */
 /*!******************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/pages/register/validator.js ***!
   \******************************************************************************/
@@ -29350,7 +29520,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _password = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/common/password.js */ 295));
+var _password = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/common/password.js */ 297));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var _default = _objectSpread({
@@ -29409,7 +29579,7 @@ var _default = _objectSpread({
 exports.default = _default;
 
 /***/ }),
-/* 295 */
+/* 297 */
 /*!*********************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/common/password.js ***!
   \*********************************************************************/
@@ -29424,7 +29594,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 244));
+var _config = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uni-id-pages/config.js */ 246));
 // 导入配置
 
 var passwordStrength = _config.default.passwordStrength;
@@ -29505,8 +29675,6 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 296 */,
-/* 297 */,
 /* 298 */,
 /* 299 */,
 /* 300 */,
@@ -29567,14 +29735,16 @@ exports.default = _default;
 /* 355 */,
 /* 356 */,
 /* 357 */,
-/* 358 */
+/* 358 */,
+/* 359 */,
+/* 360 */
 /*!************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/objectWithoutProperties.js ***!
   \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var objectWithoutPropertiesLoose = __webpack_require__(/*! ./objectWithoutPropertiesLoose.js */ 359);
+var objectWithoutPropertiesLoose = __webpack_require__(/*! ./objectWithoutPropertiesLoose.js */ 361);
 function _objectWithoutProperties(source, excluded) {
   if (source == null) return {};
   var target = objectWithoutPropertiesLoose(source, excluded);
@@ -29593,7 +29763,7 @@ function _objectWithoutProperties(source, excluded) {
 module.exports = _objectWithoutProperties, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 359 */
+/* 361 */
 /*!*****************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/objectWithoutPropertiesLoose.js ***!
   \*****************************************************************************/
@@ -29615,7 +29785,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 module.exports = _objectWithoutPropertiesLoose, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 360 */
+/* 362 */
 /*!**************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/common/check-id-card.js ***!
   \**************************************************************************/
@@ -29644,8 +29814,6 @@ var _default = checkIdCard;
 exports.default = _default;
 
 /***/ }),
-/* 361 */,
-/* 362 */,
 /* 363 */,
 /* 364 */,
 /* 365 */,
@@ -29692,7 +29860,15 @@ exports.default = _default;
 /* 406 */,
 /* 407 */,
 /* 408 */,
-/* 409 */
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */,
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */
 /*!*************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \*************************************************************************/
@@ -29923,7 +30099,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 410 */
+/* 418 */
 /*!*************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-icon/props.js ***!
   \*************************************************************************/
@@ -30030,14 +30206,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */
+/* 419 */,
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */
 /*!***************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \***************************************************************************/
@@ -30089,14 +30265,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */,
 /* 427 */,
 /* 428 */,
 /* 429 */,
@@ -30104,7 +30272,33 @@ exports.default = _default;
 /* 431 */,
 /* 432 */,
 /* 433 */,
-/* 434 */,
+/* 434 */
+/*!****************************************!*\
+  !*** D:/onlinePayStore/utils/tools.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.discount = discount;
+exports.priceFormat = priceFormat;
+// 价格 将分转为元
+function priceFormat(num) {
+  return (num / 100).toFixed(2);
+}
+
+// 折扣格式化
+function discount(num1, num2) {
+  var num = parseInt(num1 / num2 * 100);
+  return num + "折";
+}
+
+/***/ }),
 /* 435 */,
 /* 436 */,
 /* 437 */,
@@ -30117,7 +30311,23 @@ exports.default = _default;
 /* 444 */,
 /* 445 */,
 /* 446 */,
-/* 447 */
+/* 447 */,
+/* 448 */,
+/* 449 */,
+/* 450 */,
+/* 451 */,
+/* 452 */,
+/* 453 */,
+/* 454 */,
+/* 455 */,
+/* 456 */,
+/* 457 */,
+/* 458 */,
+/* 459 */,
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */
 /*!***************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-search/props.js ***!
   \***************************************************************************/
@@ -30253,21 +30463,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 448 */,
-/* 449 */,
-/* 450 */,
-/* 451 */,
-/* 452 */,
-/* 453 */,
-/* 454 */,
-/* 455 */,
-/* 456 */,
-/* 457 */,
-/* 458 */,
-/* 459 */,
-/* 460 */,
-/* 461 */,
-/* 462 */
+/* 464 */,
+/* 465 */,
+/* 466 */,
+/* 467 */,
+/* 468 */,
+/* 469 */,
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */,
+/* 474 */,
+/* 475 */,
+/* 476 */,
+/* 477 */,
+/* 478 */
 /*!*************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-form/props.js ***!
   \*************************************************************************/
@@ -30330,12 +30540,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 463 */,
-/* 464 */,
-/* 465 */,
-/* 466 */,
-/* 467 */,
-/* 468 */
+/* 479 */,
+/* 480 */,
+/* 481 */,
+/* 482 */,
+/* 483 */,
+/* 484 */
 /*!******************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-form-item/props.js ***!
   \******************************************************************************/
@@ -30401,14 +30611,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 469 */,
-/* 470 */,
-/* 471 */,
-/* 472 */,
-/* 473 */,
-/* 474 */,
-/* 475 */,
-/* 476 */
+/* 485 */,
+/* 486 */,
+/* 487 */,
+/* 488 */,
+/* 489 */,
+/* 490 */,
+/* 491 */,
+/* 492 */
 /*!**************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-input/props.js ***!
   \**************************************************************************/
@@ -30613,12 +30823,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 477 */,
-/* 478 */,
-/* 479 */,
-/* 480 */,
-/* 481 */,
-/* 482 */
+/* 493 */,
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */,
+/* 498 */
 /*!***************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-switch/props.js ***!
   \***************************************************************************/
@@ -30690,14 +30900,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 483 */,
-/* 484 */,
-/* 485 */,
-/* 486 */,
-/* 487 */,
-/* 488 */,
-/* 489 */,
-/* 490 */
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */,
+/* 505 */,
+/* 506 */
 /*!*******************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/libs/mixin/button.js ***!
   \*******************************************************************/
@@ -30727,7 +30937,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 491 */
+/* 507 */
 /*!*********************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/libs/mixin/openType.js ***!
   \*********************************************************************/
@@ -30769,7 +30979,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 492 */
+/* 508 */
 /*!***************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-button/props.js ***!
   \***************************************************************************/
@@ -30948,22 +31158,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 493 */,
-/* 494 */,
-/* 495 */,
-/* 496 */,
-/* 497 */,
-/* 498 */,
-/* 499 */,
-/* 500 */,
-/* 501 */,
-/* 502 */,
-/* 503 */,
-/* 504 */,
-/* 505 */,
-/* 506 */,
-/* 507 */,
-/* 508 */,
 /* 509 */,
 /* 510 */,
 /* 511 */,
@@ -30983,7 +31177,23 @@ exports.default = _default;
 /* 525 */,
 /* 526 */,
 /* 527 */,
-/* 528 */
+/* 528 */,
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */,
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */
 /*!*****************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-popup/components/uni-popup/popup.js ***!
   \*****************************************************************************/
@@ -31024,7 +31234,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 529 */
+/* 545 */
 /*!**********************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-popup/components/uni-popup/i18n/index.js ***!
   \**********************************************************************************/
@@ -31039,9 +31249,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 530));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 531));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 532));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 546));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 547));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 548));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -31050,7 +31260,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 530 */
+/* 546 */
 /*!*********************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-popup/components/uni-popup/i18n/en.json ***!
   \*********************************************************************************/
@@ -31060,7 +31270,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-popup.cancel\":\"cancel\",\"uni-popup.ok\":\"ok\",\"uni-popup.placeholder\":\"pleace enter\",\"uni-popup.title\":\"Hint\",\"uni-popup.shareTitle\":\"Share to\"}");
 
 /***/ }),
-/* 531 */
+/* 547 */
 /*!**************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-popup/components/uni-popup/i18n/zh-Hans.json ***!
   \**************************************************************************************/
@@ -31070,7 +31280,7 @@ module.exports = JSON.parse("{\"uni-popup.cancel\":\"cancel\",\"uni-popup.ok\":\
 module.exports = JSON.parse("{\"uni-popup.cancel\":\"取消\",\"uni-popup.ok\":\"确定\",\"uni-popup.placeholder\":\"请输入\",\"uni-popup.title\":\"提示\",\"uni-popup.shareTitle\":\"分享到\"}");
 
 /***/ }),
-/* 532 */
+/* 548 */
 /*!**************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-popup/components/uni-popup/i18n/zh-Hant.json ***!
   \**************************************************************************************/
@@ -31080,22 +31290,6 @@ module.exports = JSON.parse("{\"uni-popup.cancel\":\"取消\",\"uni-popup.ok\":\
 module.exports = JSON.parse("{\"uni-popup.cancel\":\"取消\",\"uni-popup.ok\":\"確定\",\"uni-popup.placeholder\":\"請輸入\",\"uni-popup.title\":\"提示\",\"uni-popup.shareTitle\":\"分享到\"}");
 
 /***/ }),
-/* 533 */,
-/* 534 */,
-/* 535 */,
-/* 536 */,
-/* 537 */,
-/* 538 */,
-/* 539 */,
-/* 540 */,
-/* 541 */,
-/* 542 */,
-/* 543 */,
-/* 544 */,
-/* 545 */,
-/* 546 */,
-/* 547 */,
-/* 548 */,
 /* 549 */,
 /* 550 */,
 /* 551 */,
@@ -31115,7 +31309,23 @@ module.exports = JSON.parse("{\"uni-popup.cancel\":\"取消\",\"uni-popup.ok\":\
 /* 565 */,
 /* 566 */,
 /* 567 */,
-/* 568 */
+/* 568 */,
+/* 569 */,
+/* 570 */,
+/* 571 */,
+/* 572 */,
+/* 573 */,
+/* 574 */,
+/* 575 */,
+/* 576 */,
+/* 577 */,
+/* 578 */,
+/* 579 */,
+/* 580 */,
+/* 581 */,
+/* 582 */,
+/* 583 */,
+/* 584 */
 /*!************************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-id-pages/pages/userinfo/cropImage/limeClipper/utils.js ***!
   \************************************************************************************************/
@@ -31370,28 +31580,28 @@ function imageTouchMoveOfCalcOffset(data, clientXForLeft, clientYForLeft) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 569 */,
-/* 570 */,
-/* 571 */,
-/* 572 */,
-/* 573 */,
-/* 574 */,
-/* 575 */,
-/* 576 */,
-/* 577 */,
-/* 578 */,
-/* 579 */,
-/* 580 */,
-/* 581 */,
-/* 582 */,
-/* 583 */,
-/* 584 */,
 /* 585 */,
 /* 586 */,
 /* 587 */,
 /* 588 */,
 /* 589 */,
-/* 590 */
+/* 590 */,
+/* 591 */,
+/* 592 */,
+/* 593 */,
+/* 594 */,
+/* 595 */,
+/* 596 */,
+/* 597 */,
+/* 598 */,
+/* 599 */,
+/* 600 */,
+/* 601 */,
+/* 602 */,
+/* 603 */,
+/* 604 */,
+/* 605 */,
+/* 606 */
 /*!********************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-forms/components/uni-forms/validate.js ***!
   \********************************************************************************/
@@ -32082,7 +32292,7 @@ var _default = SchemaValidator;
 exports.default = _default;
 
 /***/ }),
-/* 591 */
+/* 607 */
 /*!*****************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-forms/components/uni-forms/utils.js ***!
   \*****************************************************************************/
@@ -32417,22 +32627,6 @@ var isEqual = function isEqual(a, b) {
 exports.isEqual = isEqual;
 
 /***/ }),
-/* 592 */,
-/* 593 */,
-/* 594 */,
-/* 595 */,
-/* 596 */,
-/* 597 */,
-/* 598 */,
-/* 599 */,
-/* 600 */,
-/* 601 */,
-/* 602 */,
-/* 603 */,
-/* 604 */,
-/* 605 */,
-/* 606 */,
-/* 607 */,
 /* 608 */,
 /* 609 */,
 /* 610 */,
@@ -32466,7 +32660,663 @@ exports.isEqual = isEqual;
 /* 638 */,
 /* 639 */,
 /* 640 */,
-/* 641 */
+/* 641 */,
+/* 642 */,
+/* 643 */
+/*!**********************************************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uni-file-picker/components/uni-file-picker/choose-and-upload-file.js ***!
+  \**********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni, wx, uniCloud) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.chooseAndUploadFile = chooseAndUploadFile;
+exports.uploadCloudFiles = uploadCloudFiles;
+var ERR_MSG_OK = 'chooseAndUploadFile:ok';
+var ERR_MSG_FAIL = 'chooseAndUploadFile:fail';
+function chooseImage(opts) {
+  var count = opts.count,
+    _opts$sizeType = opts.sizeType,
+    sizeType = _opts$sizeType === void 0 ? ['original', 'compressed'] : _opts$sizeType,
+    sourceType = opts.sourceType,
+    extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    // 微信由于旧接口不再维护，针对微信小程序平台改用chooseMedia接口
+
+    uni.chooseMedia({
+      count: count,
+      sizeType: sizeType,
+      sourceType: sourceType,
+      mediaType: ['image'],
+      extension: extension,
+      success: function success(res) {
+        res.tempFiles.forEach(function (item) {
+          item.path = item.tempFilePath;
+        });
+        resolve(normalizeChooseAndUploadFileRes(res, 'image'));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseImage:fail', ERR_MSG_FAIL)
+        });
+      }
+    });
+  });
+}
+function chooseVideo(opts) {
+  var count = opts.count,
+    camera = opts.camera,
+    compressed = opts.compressed,
+    maxDuration = opts.maxDuration,
+    sourceType = opts.sourceType,
+    extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    // 微信由于旧接口不再维护，针对微信小程序平台改用chooseMedia接口
+
+    uni.chooseMedia({
+      count: count,
+      compressed: compressed,
+      maxDuration: maxDuration,
+      sourceType: sourceType,
+      extension: extension,
+      mediaType: ['video'],
+      success: function success(res) {
+        var tempFiles = res.tempFiles;
+        resolve(normalizeChooseAndUploadFileRes({
+          errMsg: 'chooseVideo:ok',
+          tempFiles: tempFiles.map(function (item) {
+            return {
+              name: item.name || '',
+              path: item.tempFilePath,
+              thumbTempFilePath: item.thumbTempFilePath,
+              size: item.size,
+              type: res.tempFile && res.tempFile.type || '',
+              width: item.width,
+              height: item.height,
+              duration: item.duration,
+              fileType: 'video',
+              cloudPath: ''
+            };
+          })
+        }, 'video'));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseVideo:fail', ERR_MSG_FAIL)
+        });
+      }
+    });
+  });
+}
+function chooseAll(opts) {
+  var count = opts.count,
+    extension = opts.extension;
+  return new Promise(function (resolve, reject) {
+    var chooseFile = uni.chooseFile;
+    if (typeof wx !== 'undefined' && typeof wx.chooseMessageFile === 'function') {
+      chooseFile = wx.chooseMessageFile;
+    }
+    if (typeof chooseFile !== 'function') {
+      return reject({
+        errMsg: ERR_MSG_FAIL + ' 请指定 type 类型，该平台仅支持选择 image 或 video。'
+      });
+    }
+    chooseFile({
+      type: 'all',
+      count: count,
+      extension: extension,
+      success: function success(res) {
+        resolve(normalizeChooseAndUploadFileRes(res));
+      },
+      fail: function fail(res) {
+        reject({
+          errMsg: res.errMsg.replace('chooseFile:fail', ERR_MSG_FAIL)
+        });
+      }
+    });
+  });
+}
+function normalizeChooseAndUploadFileRes(res, fileType) {
+  res.tempFiles.forEach(function (item, index) {
+    if (!item.name) {
+      item.name = item.path.substring(item.path.lastIndexOf('/') + 1);
+    }
+    if (fileType) {
+      item.fileType = fileType;
+    }
+    item.cloudPath = Date.now() + '_' + index + item.name.substring(item.name.lastIndexOf('.'));
+  });
+  if (!res.tempFilePaths) {
+    res.tempFilePaths = res.tempFiles.map(function (file) {
+      return file.path;
+    });
+  }
+  return res;
+}
+function uploadCloudFiles(files) {
+  var max = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;
+  var _onUploadProgress = arguments.length > 2 ? arguments[2] : undefined;
+  files = JSON.parse(JSON.stringify(files));
+  var len = files.length;
+  var count = 0;
+  var self = this;
+  return new Promise(function (resolve) {
+    while (count < max) {
+      next();
+    }
+    function next() {
+      var cur = count++;
+      if (cur >= len) {
+        !files.find(function (item) {
+          return !item.url && !item.errMsg;
+        }) && resolve(files);
+        return;
+      }
+      var fileItem = files[cur];
+      var index = self.files.findIndex(function (v) {
+        return v.uuid === fileItem.uuid;
+      });
+      fileItem.url = '';
+      delete fileItem.errMsg;
+      uniCloud.uploadFile({
+        filePath: fileItem.path,
+        cloudPath: fileItem.cloudPath,
+        fileType: fileItem.fileType,
+        onUploadProgress: function onUploadProgress(res) {
+          res.index = index;
+          _onUploadProgress && _onUploadProgress(res);
+        }
+      }).then(function (res) {
+        fileItem.url = res.fileID;
+        fileItem.index = index;
+        if (cur < len) {
+          next();
+        }
+      }).catch(function (res) {
+        fileItem.errMsg = res.errMsg || res.message;
+        fileItem.index = index;
+        if (cur < len) {
+          next();
+        }
+      });
+    }
+  });
+}
+function uploadFiles(choosePromise, _ref) {
+  var onChooseFile = _ref.onChooseFile,
+    onUploadProgress = _ref.onUploadProgress;
+  return choosePromise.then(function (res) {
+    if (onChooseFile) {
+      var customChooseRes = onChooseFile(res);
+      if (typeof customChooseRes !== 'undefined') {
+        return Promise.resolve(customChooseRes).then(function (chooseRes) {
+          return typeof chooseRes === 'undefined' ? res : chooseRes;
+        });
+      }
+    }
+    return res;
+  }).then(function (res) {
+    if (res === false) {
+      return {
+        errMsg: ERR_MSG_OK,
+        tempFilePaths: [],
+        tempFiles: []
+      };
+    }
+    return res;
+  });
+}
+function chooseAndUploadFile() {
+  var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    type: 'all'
+  };
+  if (opts.type === 'image') {
+    return uploadFiles(chooseImage(opts), opts);
+  } else if (opts.type === 'video') {
+    return uploadFiles(chooseVideo(opts), opts);
+  }
+  return uploadFiles(chooseAll(opts), opts);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 27)["default"]))
+
+/***/ }),
+/* 644 */
+/*!*****************************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uni-file-picker/components/uni-file-picker/utils.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.get_files_and_is_max = exports.get_file_info = exports.get_file_ext = exports.get_file_data = exports.get_extname = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 31));
+/**
+ * 获取文件名和后缀
+ * @param {String} name
+ */
+var get_file_ext = function get_file_ext(name) {
+  var last_len = name.lastIndexOf('.');
+  var len = name.length;
+  return {
+    name: name.substring(0, last_len),
+    ext: name.substring(last_len + 1, len)
+  };
+};
+
+/**
+ * 获取扩展名
+ * @param {Array} fileExtname
+ */
+exports.get_file_ext = get_file_ext;
+var get_extname = function get_extname(fileExtname) {
+  if (!Array.isArray(fileExtname)) {
+    var extname = fileExtname.replace(/(\[|\])/g, '');
+    return extname.split(',');
+  } else {
+    return fileExtname;
+  }
+  return [];
+};
+
+/**
+ * 获取文件和检测是否可选
+ */
+exports.get_extname = get_extname;
+var get_files_and_is_max = function get_files_and_is_max(res, _extname) {
+  var filePaths = [];
+  var files = [];
+  if (!_extname || _extname.length === 0) {
+    return {
+      filePaths: filePaths,
+      files: files
+    };
+  }
+  res.tempFiles.forEach(function (v) {
+    var fileFullName = get_file_ext(v.name);
+    var extname = fileFullName.ext.toLowerCase();
+    if (_extname.indexOf(extname) !== -1) {
+      files.push(v);
+      filePaths.push(v.path);
+    }
+  });
+  if (files.length !== res.tempFiles.length) {
+    uni.showToast({
+      title: "\u5F53\u524D\u9009\u62E9\u4E86".concat(res.tempFiles.length, "\u4E2A\u6587\u4EF6 \uFF0C").concat(res.tempFiles.length - files.length, " \u4E2A\u6587\u4EF6\u683C\u5F0F\u4E0D\u6B63\u786E"),
+      icon: 'none',
+      duration: 5000
+    });
+  }
+  return {
+    filePaths: filePaths,
+    files: files
+  };
+};
+
+/**
+ * 获取图片信息
+ * @param {Object} filepath
+ */
+exports.get_files_and_is_max = get_files_and_is_max;
+var get_file_info = function get_file_info(filepath) {
+  return new Promise(function (resolve, reject) {
+    uni.getImageInfo({
+      src: filepath,
+      success: function success(res) {
+        resolve(res);
+      },
+      fail: function fail(err) {
+        reject(err);
+      }
+    });
+  });
+};
+/**
+ * 获取封装数据
+ */
+exports.get_file_info = get_file_info;
+var get_file_data = /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(files) {
+    var type,
+      fileFullName,
+      extname,
+      filedata,
+      imageinfo,
+      _args = arguments;
+    return _regenerator.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            type = _args.length > 1 && _args[1] !== undefined ? _args[1] : 'image';
+            // 最终需要上传数据库的数据
+            fileFullName = get_file_ext(files.name);
+            extname = fileFullName.ext.toLowerCase();
+            filedata = {
+              name: files.name,
+              uuid: files.uuid,
+              extname: extname || '',
+              cloudPath: files.cloudPath,
+              fileType: files.fileType,
+              thumbTempFilePath: files.thumbTempFilePath,
+              url: files.path || files.path,
+              size: files.size,
+              //单位是字节
+              image: {},
+              path: files.path,
+              video: {}
+            };
+            if (!(type === 'image')) {
+              _context.next = 14;
+              break;
+            }
+            _context.next = 7;
+            return get_file_info(files.path);
+          case 7:
+            imageinfo = _context.sent;
+            delete filedata.video;
+            filedata.image.width = imageinfo.width;
+            filedata.image.height = imageinfo.height;
+            filedata.image.location = imageinfo.path;
+            _context.next = 15;
+            break;
+          case 14:
+            delete filedata.image;
+          case 15:
+            return _context.abrupt("return", filedata);
+          case 16:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return function get_file_data(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+exports.get_file_data = get_file_data;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 645 */,
+/* 646 */,
+/* 647 */,
+/* 648 */,
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */,
+/* 654 */,
+/* 655 */,
+/* 656 */,
+/* 657 */,
+/* 658 */,
+/* 659 */
+/*!*************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-cell/props.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default2 = {
+  props: {
+    // 标题
+    title: {
+      type: [String, Number],
+      default: uni.$u.props.cell.title
+    },
+    // 标题下方的描述信息
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.cell.label
+    },
+    // 右侧的内容
+    value: {
+      type: [String, Number],
+      default: uni.$u.props.cell.value
+    },
+    // 左侧图标名称，或者图片链接(本地文件建议使用绝对地址)
+    icon: {
+      type: String,
+      default: uni.$u.props.cell.icon
+    },
+    // 是否禁用cell
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.cell.disabled
+    },
+    // 是否显示下边框
+    border: {
+      type: Boolean,
+      default: uni.$u.props.cell.border
+    },
+    // 内容是否垂直居中(主要是针对右侧的value部分)
+    center: {
+      type: Boolean,
+      default: uni.$u.props.cell.center
+    },
+    // 点击后跳转的URL地址
+    url: {
+      type: String,
+      default: uni.$u.props.cell.url
+    },
+    // 链接跳转的方式，内部使用的是uView封装的route方法，可能会进行拦截操作
+    linkType: {
+      type: String,
+      default: uni.$u.props.cell.linkType
+    },
+    // 是否开启点击反馈(表现为点击时加上灰色背景)
+    clickable: {
+      type: Boolean,
+      default: uni.$u.props.cell.clickable
+    },
+    // 是否展示右侧箭头并开启点击反馈
+    isLink: {
+      type: Boolean,
+      default: uni.$u.props.cell.isLink
+    },
+    // 是否显示表单状态下的必填星号(此组件可能会内嵌入input组件)
+    required: {
+      type: Boolean,
+      default: uni.$u.props.cell.required
+    },
+    // 右侧的图标箭头
+    rightIcon: {
+      type: String,
+      default: uni.$u.props.cell.rightIcon
+    },
+    // 右侧箭头的方向，可选值为：left，up，down
+    arrowDirection: {
+      type: String,
+      default: uni.$u.props.cell.arrowDirection
+    },
+    // 左侧图标样式
+    iconStyle: {
+      type: [Object, String],
+      default: function _default() {
+        return uni.$u.props.cell.iconStyle;
+      }
+    },
+    // 右侧箭头图标的样式
+    rightIconStyle: {
+      type: [Object, String],
+      default: function _default() {
+        return uni.$u.props.cell.rightIconStyle;
+      }
+    },
+    // 标题的样式
+    titleStyle: {
+      type: [Object, String],
+      default: function _default() {
+        return uni.$u.props.cell.titleStyle;
+      }
+    },
+    // 单位元的大小，可选值为large
+    size: {
+      type: String,
+      default: uni.$u.props.cell.size
+    },
+    // 点击cell是否阻止事件传播
+    stop: {
+      type: Boolean,
+      default: uni.$u.props.cell.stop
+    },
+    // 标识符，cell被点击时返回
+    name: {
+      type: [Number, String],
+      default: uni.$u.props.cell.name
+    }
+  }
+};
+exports.default = _default2;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */,
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */
+/*!**************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-popup/props.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 是否展示弹窗
+    show: {
+      type: Boolean,
+      default: uni.$u.props.popup.show
+    },
+    // 是否显示遮罩
+    overlay: {
+      type: Boolean,
+      default: uni.$u.props.popup.overlay
+    },
+    // 弹出的方向，可选值为 top bottom right left center
+    mode: {
+      type: String,
+      default: uni.$u.props.popup.mode
+    },
+    // 动画时长，单位ms
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.popup.duration
+    },
+    // 是否显示关闭图标
+    closeable: {
+      type: Boolean,
+      default: uni.$u.props.popup.closeable
+    },
+    // 自定义遮罩的样式
+    overlayStyle: {
+      type: [Object, String],
+      default: uni.$u.props.popup.overlayStyle
+    },
+    // 点击遮罩是否关闭弹窗
+    closeOnClickOverlay: {
+      type: Boolean,
+      default: uni.$u.props.popup.closeOnClickOverlay
+    },
+    // 层级
+    zIndex: {
+      type: [String, Number],
+      default: uni.$u.props.popup.zIndex
+    },
+    // 是否为iPhoneX留出底部安全距离
+    safeAreaInsetBottom: {
+      type: Boolean,
+      default: uni.$u.props.popup.safeAreaInsetBottom
+    },
+    // 是否留出顶部安全距离（状态栏高度）
+    safeAreaInsetTop: {
+      type: Boolean,
+      default: uni.$u.props.popup.safeAreaInsetTop
+    },
+    // 自定义关闭图标位置，top-left为左上角，top-right为右上角，bottom-left为左下角，bottom-right为右下角
+    closeIconPos: {
+      type: String,
+      default: uni.$u.props.popup.closeIconPos
+    },
+    // 是否显示圆角
+    round: {
+      type: [Boolean, String, Number],
+      default: uni.$u.props.popup.round
+    },
+    // mode=center，也即中部弹出时，是否使用缩放模式
+    zoom: {
+      type: Boolean,
+      default: uni.$u.props.popup.zoom
+    },
+    // 弹窗背景色，设置为transparent可去除白色背景
+    bgColor: {
+      type: String,
+      default: uni.$u.props.popup.bgColor
+    },
+    // 遮罩的透明度，0-1之间
+    overlayOpacity: {
+      type: [Number, String],
+      default: uni.$u.props.popup.overlayOpacity
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 675 */,
+/* 676 */,
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */,
+/* 683 */,
+/* 684 */,
+/* 685 */,
+/* 686 */,
+/* 687 */,
+/* 688 */,
+/* 689 */
 /*!****************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-overlay/props.js ***!
   \****************************************************************************/
@@ -32508,14 +33358,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 642 */,
-/* 643 */,
-/* 644 */,
-/* 645 */,
-/* 646 */,
-/* 647 */,
-/* 648 */,
-/* 649 */
+/* 690 */,
+/* 691 */,
+/* 692 */,
+/* 693 */,
+/* 694 */,
+/* 695 */,
+/* 696 */,
+/* 697 */
 /*!***************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/libs/util/async-validator.js ***!
   \***************************************************************************/
@@ -32553,7 +33403,7 @@ function _extends() {
 var formatRegExp = /%[sdj%]/g;
 var warning = function warning() {}; // don't print warning message when in production env or node runtime
 
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
+if (typeof process !== 'undefined' && Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"onlinePayStore","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
   warning = function warning(type, errors) {
     if (typeof console !== 'undefined' && console.warn) {
       if (errors.every(function (e) {
@@ -33696,10 +34546,10 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema; // # sourceMappingURL=index.js.map
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../Application/HBuilderX.4.14.2024043013/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 650)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../Application/HBuilderX.4.14.2024043013/HBuilderX/plugins/uniapp-cli/node_modules/node-libs-browser/mock/process.js */ 698)))
 
 /***/ }),
-/* 650 */
+/* 698 */
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -33730,7 +34580,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 651);
+        if (!path) path = __webpack_require__(/*! path */ 699);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -33743,7 +34593,7 @@ exports.features = {};
 
 
 /***/ }),
-/* 651 */
+/* 699 */
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -34053,15 +34903,15 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 650)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 698)))
 
 /***/ }),
-/* 652 */,
-/* 653 */,
-/* 654 */,
-/* 655 */,
-/* 656 */,
-/* 657 */
+/* 700 */,
+/* 701 */,
+/* 702 */,
+/* 703 */,
+/* 704 */,
+/* 705 */
 /*!*************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-line/props.js ***!
   \*************************************************************************/
@@ -34112,21 +34962,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 658 */,
-/* 659 */,
-/* 660 */,
-/* 661 */,
-/* 662 */,
-/* 663 */,
-/* 664 */,
-/* 665 */,
-/* 666 */,
-/* 667 */,
-/* 668 */,
-/* 669 */,
-/* 670 */,
-/* 671 */,
-/* 672 */
+/* 706 */,
+/* 707 */,
+/* 708 */,
+/* 709 */,
+/* 710 */,
+/* 711 */,
+/* 712 */,
+/* 713 */,
+/* 714 */,
+/* 715 */,
+/* 716 */,
+/* 717 */,
+/* 718 */,
+/* 719 */,
+/* 720 */
 /*!*********************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
   \*********************************************************************************/
@@ -34203,19 +35053,19 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 673 */,
-/* 674 */,
-/* 675 */,
-/* 676 */,
-/* 677 */,
-/* 678 */,
-/* 679 */,
-/* 680 */,
-/* 681 */,
-/* 682 */,
-/* 683 */,
-/* 684 */,
-/* 685 */
+/* 721 */,
+/* 722 */,
+/* 723 */,
+/* 724 */,
+/* 725 */,
+/* 726 */,
+/* 727 */,
+/* 728 */,
+/* 729 */,
+/* 730 */,
+/* 731 */,
+/* 732 */,
+/* 733 */
 /*!*****************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-icons/components/uni-icons/uniicons_file_vue.js ***!
   \*****************************************************************************************/
@@ -34718,21 +35568,21 @@ var fontData = [{
 exports.fontData = fontData;
 
 /***/ }),
-/* 686 */,
-/* 687 */,
-/* 688 */,
-/* 689 */,
-/* 690 */,
-/* 691 */,
-/* 692 */,
-/* 693 */,
-/* 694 */,
-/* 695 */,
-/* 696 */,
-/* 697 */,
-/* 698 */,
-/* 699 */,
-/* 700 */
+/* 734 */,
+/* 735 */,
+/* 736 */,
+/* 737 */,
+/* 738 */,
+/* 739 */,
+/* 740 */,
+/* 741 */,
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */
 /*!*************************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \*************************************************************************************************/
@@ -34866,12 +35716,26 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 701 */,
-/* 702 */,
-/* 703 */,
-/* 704 */,
-/* 705 */,
-/* 706 */
+/* 749 */,
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */,
+/* 754 */,
+/* 755 */,
+/* 756 */,
+/* 757 */,
+/* 758 */,
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */,
+/* 767 */,
+/* 768 */
 /*!*******************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-number-box/props.js ***!
   \*******************************************************************************/
@@ -34998,14 +35862,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 707 */,
-/* 708 */,
-/* 709 */,
-/* 710 */,
-/* 711 */,
-/* 712 */,
-/* 713 */,
-/* 714 */
+/* 769 */,
+/* 770 */,
+/* 771 */,
+/* 772 */,
+/* 773 */,
+/* 774 */,
+/* 775 */,
+/* 776 */
 /*!*******************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-transition/props.js ***!
   \*******************************************************************************/
@@ -35047,7 +35911,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 715 */
+/* 777 */
 /*!************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-transition/transition.js ***!
   \************************************************************************************/
@@ -35064,7 +35928,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 31));
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 716));
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 778));
 // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {
   return new Promise(function (resolve) {
@@ -35156,7 +36020,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 716 */
+/* 778 */
 /*!**************************************************************************************!*\
   !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
   \**************************************************************************************/
@@ -35345,6 +36209,66 @@ var _default = {
       transform: 'scale(0.95)'
     }
   }
+};
+exports.default = _default;
+
+/***/ }),
+/* 779 */,
+/* 780 */,
+/* 781 */,
+/* 782 */,
+/* 783 */,
+/* 784 */,
+/* 785 */,
+/* 786 */
+/*!*******************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-status-bar/props.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    bgColor: {
+      type: String,
+      default: uni.$u.props.statusBar.bgColor
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 787 */,
+/* 788 */,
+/* 789 */,
+/* 790 */,
+/* 791 */,
+/* 792 */,
+/* 793 */,
+/* 794 */
+/*!********************************************************************************!*\
+  !*** D:/onlinePayStore/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {}
 };
 exports.default = _default;
 

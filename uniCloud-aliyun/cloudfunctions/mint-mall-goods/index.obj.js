@@ -28,6 +28,7 @@ module.exports = {
 		let pureArrData = navData.data.filter(item=> {
 			return item.proGroup.length;
 		});
+		//return pureArrData;
 		return { data: pureArrData };
 	},
 	

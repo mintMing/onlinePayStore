@@ -15,10 +15,8 @@
 /* 布局 */
 .proItem.data-v-54ad3524 {
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 25rpx 0;
+  display: flex;
 }
 .proItem .proPic.data-v-54ad3524 {
   width: 170rpx;

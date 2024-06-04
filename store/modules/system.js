@@ -20,7 +20,7 @@ const system = {
 		foldState: false
 	},
 	mutations: {
-		SET_FOLD_STATE(state, value){
+		setFoldState(state, value){
 			state.foldState = value;
 		},
 	}

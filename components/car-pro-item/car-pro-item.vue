@@ -2,14 +2,14 @@
 	<view class="carProItem">
 		<view class="left">
 			<view class="pic">
-				<image class="img" :src="item.thumb" mode="aspectFill"></image>
+				<image class="img" :src="item.thumb[0].url" mode="aspectFill"></image>
 			</view>
 			<view class="text">
 				<view class="title">{{item.name}}</view>
 				<view class="sku" v-if="false">微辣/10包</view>
 				<view class="price">
-					<view class="minPrice">￥{{item.price}}</view>
-					<view class="oriPrice">￥{{item.before_price}}</view>
+					<view class="minPrice">￥{{ priceFormat(item.price) }}</view>
+					<view class="oriPrice">￥{{ priceFormat(item.originalPrice) }}</view>
 				</view>
 			</view>
 		</view>
@@ -21,22 +21,28 @@
 </template>
 
 <script>
-	export default {
-		name:"car-pro-item",
-		data() {
-			return {
-				
-			};
-		},
-		props: {
-			item: {
-				type: Object,
-				default: ()=> {
-					return  "";
-				},
-			}
+import { priceFormat, discount } from "@/utils/tools.js";
+
+export default {
+	name:"car-pro-item",
+	data() {
+		return {
+			
+		};
+	},
+	props: {
+		item: {
+			type: Object,
+			default: ()=> {
+				return  "";
+			},
 		}
+	},
+	methods: {
+		priceFormat,
+		discount,
 	}
+}
 </script>
 
 <style lang="scss" scoped>

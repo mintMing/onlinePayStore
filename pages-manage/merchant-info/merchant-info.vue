@@ -2,10 +2,10 @@
 	<view class="merchantInfo">
 		<uni-forms ref="brandRef" :rules="InfoRules" :model="merchantFormData"  :label-width="100" label-align="right">
 			<!-- limit 限制照片数量 -->
-			<uni-forms-item label="品牌招牌">
+			<uni-forms-item label="品牌招牌" name="thumb">
 				<uni-file-picker
-					v-model="merchantFormData.thumb" 
-					fileMediatype="image" 
+					v-model="merchantFormData.thumb"
+					fileMediatype="image"
 					mode="grid"
 					:limit="1"
 				/>
@@ -81,21 +81,23 @@ export default {
 		this.getMerchantInfo();
 	},
 	methods: {
-		//...mapMutations(["SET_BRAND"]),
+		...mapMutations(["setMerchantInfo"]),
 		getMerchantInfo() {
 			MerchantCloudObj.mIget().then(res=> {
+				//console.log(res);
+				// !!! 如果在表中的thumb为空，之后
 				this.merchantFormData = res.data[0];
 			});
 		},
 		onSubmit() {
 			// validate of forms methods 对整个表单进行校验的方法，会返回一个 promise
+			console.log(this.merchantFormData.thumb);
 			console.log(this.$refs.brandRef.validate())
 			this.$refs.brandRef.validate().then(res=> {
 				//console.log(this.$refs.brandRef.validate());
 				// 只需要指定的照片信息
-				//console.log(this.merchantFormData);
+				console.log(this.merchantFormData);
 				let arr = this.merchantFormData.thumb.map(item=> {
-					
 					return {
 						extname: item.extname,
 						url: item.url,
@@ -103,59 +105,31 @@ export default {
 						size: item.size,
 					};
 				});
-				
 				this.merchantFormData.thumb = arr;
+				
 				this.InfoUpdate();	
 			}).catch(err=> {
 				console.log("错误："+err);
 			});
 		},
-		InfoUpdate() {
-			if(this.merchantFormData._id){
-				MerchantCloudObj.mIUpdate(this.merchantFormData).then(res=>{
-					uni.showToast({
-						title:"修改成功",
-						mask:true
-					})
-					setTimeout(()=>{
-						uni.navigateBack();
-					},1500)
-					
-				})
-			}else{
-				//新增
-				MerchantCloudObj.mIAdd(this.merchantFormData).then(res=>{
-					uni.showToast({
-						title:"新增成功"
-					})
-					setTimeout(()=>{
-						uni.navigateBack();
-					}, 1500)
-				})
-			}
-
-			/*
-			console.log(this.merchantFormData);
+		async InfoUpdate() {
 			let title;
 			if(this.merchantFormData._id){
-				MerchantCloudObj.mIUpdate(this.merchantFormData);
-				title = "修改成功！";
-			}else{
-				MerchantCloudObj.mIAdd(this.merchantFormData);
-				title = "新增成功！";
-			}
-			
-			uni.showToast({
-				title,
-				mask: true,
-			});
-			setTimeout(()=> {
-				uni.navigateBack(); // 返回上级页面并传参
-			}, 1500);
-			
-			//this.SET_BRAND(this.merchantFormData);
-			*/
-		},
+				await MerchantCloudObj.mIUpdate(this.merchantFormData);
+				title = "修改成功";
+		   }else{
+			   await MerchantCloudObj.mIAdd(this.merchantFormData);
+				title = "新增成功";
+		   }
+		   uni.showToast({
+			   title,
+			   mask: true,
+		   });
+		   setTimeout(()=> {
+			   uni.navigateBack(); // 返回上级页面并传参
+		   }, 1500);
+		   this.setMerchantInfo(this.merchantFormData);
+		}
 	},
 	
 }
