@@ -1,0 +1,152 @@
+![图片](https://github.com/mintMing/onlinePayStore/assets/57621966/4c39344d-99a3-4392-9849-27d57f61cabb)# onlineStore
+## 目录结构
+### 默认结构
+|-- undefined
+    |-- App.vue
+    |-- index.html
+    |-- main.js
+    |-- manifest.json
+    |-- onlinePayStore.md
+    |-- pages.json
+    |-- uni.promisify.adaptor.js
+    |-- uni.scss
+    |-- pages
+    |   |-- index
+    |       |-- index.vue
+    |-- static
+    |   |-- logo.png
+    |-- uniCloud-aliyun
+    |   |-- cloudfunctions
+    |   |-- database
+    |       |-- JQL查询.jql
+    |-- uni_modules
+        |-- uni-config-center
+        |   |-- changelog.md
+        |   |-- package.json
+        |   |-- readme.md
+        |   |-- uniCloud
+        |-- uni-id-common
+
+### 用户端渲染数据库数据（主页）时目录
+|-- undefined
+    |-- App.vue
+    |-- index.html
+    |-- main.js
+    |-- manifest.json
+    |-- onlinePayStore.md
+    |-- pages.json
+    |-- uni.promisify.adaptor.js
+    |-- uni.scss
+    |-- .hbuilderx
+    |   |-- launch.json
+    |-- components
+    |   |-- car-layout
+    |   |   |-- car-layout.vue
+    |   |-- car-pro-item
+    |   |   |-- car-pro-item.vue
+    |   |-- delivery-layout
+    |   |   |-- delivery-layout.vue
+    |   |-- goods-list
+    |   |   |-- goods-list.vue
+    |   |-- head-bar
+    |   |   |-- head-bar.vue
+    |   |-- pro-detail-popup
+    |   |   |-- pro-detail-popup.vue
+    |   |-- product-item
+    |   |   |-- product-item.vue
+    |   |-- stepper
+    |       |-- stepper.vue
+    |-- pages
+    |   |-- address
+    |   |   |-- address-list.vue
+    |   |   |-- edit-address.vue
+    |   |-- index
+    |   |   |-- index.vue
+    |   |-- order
+    |   |   |-- detail.vue
+    |   |   |-- order.vue
+    |   |-- order-pay
+    |   |   |-- order-pay.vue
+    |   |-- search
+    |       |-- search.vue
+    |-- pages-manage
+    |   |-- goods
+    |   |   |-- product-add.vue
+    |   |   |-- product-list.vue
+    |   |-- index
+    |   |   |-- index.vue
+    |   |-- merchant-info
+    |   |   |-- merchant-info.vue
+    |   |-- product-category
+    |       |-- product-category.vue
+    |-- static
+    |   |-- logo.png
+    |   |-- logo2.jpg
+    |   |-- TEST.png
+    |-- store
+    |   |-- getter.js
+    |   |-- index.js
+    |   |-- modules
+    |       |-- cars.js
+    |       |-- goods.js
+    |       |-- merchant.js
+    |       |-- system.js
+    |-- uniCloud-aliyun
+    |   |-- cloudfunctions
+    |   |   |-- mint-mall-goods
+    |   |   |   |-- index.obj.js
+    |   |   |   |-- package.json
+    |   |   |-- mint-mall-merchantInfo
+    |   |   |   |-- index.obj.js
+    |   |   |   |-- package.json
+    |   |   |-- mint-mall-sku
+    |   |       |-- index.obj.js
+    |   |       |-- package.json
+    |   |-- database
+    |       |-- JQL查询.jql
+    |       |-- mint-mall-categories.index.json
+    |       |-- mint-mall-categories.init_data.json
+    |       |-- mint-mall-categories.schema.json
+    |-- uni_modules
+    |   |-- uni-badge
+    |   |-- uni-captcha
+    |   |-- uni-cloud-s2s
+    |   |-- uni-config-center
+    |   |-- uni-data-checkbox
+    |   |-- uni-data-select
+    |   |-- uni-easyinput
+    |   |-- uni-file-picker
+    |   |-- uni-forms
+    |   |-- uni-icons
+    |   |-- uni-id-common
+    |   |-- uni-id-pages
+    |   |-- uni-list
+    |   |-- uni-load-more
+    |   |-- uni-open-bridge-common
+    |   |-- uni-popup
+    |   |-- uni-scss
+    |   |-- uni-section
+    |   |-- uni-transition
+    |   |-- uview-ui
+
+## 页面展示
+### 主页
+![main](https://github.com/mintMing/onlinePayStore/assets/57621966/0818f6d2-325f-463c-9d22-3a7491d7ccc6)
+
+#### 产品详细
+![sku](https://github.com/mintMing/onlinePayStore/assets/57621966/fb33871d-3eb1-439d-a855-81e526b7b097)
+
+### 后台
+![manage](https://github.com/mintMing/onlinePayStore/assets/57621966/8facebb0-f404-49fb-96a2-b2727e5bc333)
+
+#### 商品列表
+![proList](https://github.com/mintMing/onlinePayStore/assets/57621966/d22d1d51-1ed6-4624-89d8-962468bed87a)
+
+### 高德API
+![map](https://github.com/mintMing/onlinePayStore/assets/57621966/fbaf0b24-0643-4898-81e4-eb4ffd1c86d7)
+
+### 数据库表
+![table](https://github.com/mintMing/onlinePayStore/assets/57621966/2142d833-028f-45bb-b71e-4df0eb8f4fa4)
+
+
+    
